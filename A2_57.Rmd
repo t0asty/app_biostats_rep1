@@ -11,7 +11,8 @@ author: Seif Ben Mustapha, Mohamed Dhraief, Alice Patin, Julian Schnitzler
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-
+treemoist <- read.delim("treemoist.txt", header=FALSE, sep="")
+colnames(treemoist) <- c("Species", "Branch", "Location", "Transpiration", "Moisture")
 ```
 
 ## Introduction
