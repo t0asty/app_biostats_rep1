@@ -1,11 +1,31 @@
 ---
 title: "Report1"
-output: pdf_document
+output:
+  pdf_document:
+    includes:
+      in_header: "preamble.tex"
+fontsize: 12pt
+geometry: margin=2.5cm
+author: Seif Ben Mustapha, Mohamed Dhraief, Alice Patin, Julian Schnitzler
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
 ```
+
+## Introduction
+
+## Exploratory Data Analysis
+
+## Model Fitting
+
+## Model Assessment
+
+## Conclusions
+
+
+
 
 ## R Markdown
 
