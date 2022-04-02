@@ -13,7 +13,9 @@ author: Seif Ben Mustapha, Mohamed Dhraief, Alice Patin, Julian Schnitzler
 knitr::opts_chunk$set(echo = TRUE)
 treemoist <- read.delim("treemoist.txt", header=FALSE, sep="")
 colnames(treemoist) <- c("species", "branch", "location", "transpiration", "moisture")
-tm.aov <- aov(moisture ~ species * branch * location * transpiration, data=treemoist)
+treemoist_no_outliers <- treemoist[-c(22,109),]
+tm.aov <- aov(moisture ~ species + branch + location + transpiration, data=treemoist)
+tm_no.aov <- aov(moisture ~ species + branch + location + transpiration, data=treemoist_no_outliers)
 ```
 
 ## Introduction
@@ -22,21 +24,49 @@ tm.aov <- aov(moisture ~ species * branch * location * transpiration, data=treem
 
 ## Model Fitting
 
+
+
 ## Model Assessment
 
-Do the model assumptions hold?
+In the following, we assess whether the assumptions underlying our model hold, i.e.
+that the errors have mean 0, the errors are homoscedastic, the errors are uncorrelated and
+are normally distributed. 
 
 ```{r, echo=FALSE}
-layout(matrix(1:4,ncol=2))
-par(pty="s",mar=c(3,1,2,1)+0.1)
-plot(tm.aov)
+layout(matrix(1:6,ncol=3))
+plot(tm.aov, which = c(1,2,3,4,5,6))
 ```
 
+We observe that there are two outliers that might harm our model assumptions: Rows 22 and 109. Since
+these two points are the only two points that appear as outliers in all 4 graphs, 
+we will remove those two from our dataset. For all other observations, it seems 
+that they follow the model assumptions approximately.
 
+In the Residuals vs Fitted graph, we can observe that the errors are homoscedastic,
+i.e. have the same variance, since the datapoints distribute in an similar manner
+above and underneath the line, independent of the fitted value. 
+We can see an exception for 109 and 22. 
+
+The design of the experiment as written in the original paper indicates that 
+the samples were chosen randomly, so we can consider all features to be 
+uncorrelated.
+
+From the Normal Q-Q plot, we can see that the residuals follow the line 
+closely, i.e. the standard residuals do not exceed 3, except for rows 109 and 22.
+Hence, except for those two points, we consider the assumption of normally distributed errors to hold. 
+
+```{r, echo=FALSE}
+layout(matrix(1:6,ncol=3))
+plot(tm_no.aov, which = c(1,2,3,4,5,6))
+```
+
+Indeed, removing those outliers seem to make the whole dataset support 
+the model assumptions.
 
 ## Conclusions
 
 
+Two observations of the dataset seem to be outliers.
 
 
 ## R Markdown
