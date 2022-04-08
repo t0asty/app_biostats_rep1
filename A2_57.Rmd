@@ -10,6 +10,60 @@ author: Seif Ben Mustapha, Mohamed Dhraief, Alice Patin, Julian Schnitzler
 ---
 
 ```{r setup, include=FALSE}
+
+
+library(ggplot2)
+
+library(ggpubr)
+library(GGally)
+
+#Import data
+data.my<-read.table('https://users.stat.ufl.edu/~winner/data/treemoist.dat',header=FALSE)
+colnames(data.my)<-c("Species","Branch","Location","Transpiration_type","Moisture_Content")
+#Univariate graphical
+species_srz <- as.data.frame(table(data.my['Species'])) 
+colnames(species_srz)<-c("Species", "Freq")
+
+
+branch_srz <- as.data.frame(table(data.my['Branch'])) 
+colnames(branch_srz)<-c("Branch", "Freq")
+
+location_srz <- as.data.frame(table(data.my['Location'])) 
+colnames(location_srz)<-c("Location", "Freq")
+
+transpiration_srz<- as.data.frame(table(data.my['Transpiration_type'])) 
+colnames(transpiration_srz)<-c("Transpiration_type", "Freq")
+
+
+
+#Bar plot for branch
+Branch_plot<-ggplot(branch_srz, aes(x = Branch, y = Freq, fill = Branch)) +  # Plot with values on top
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = Freq), vjust = 0)
+
+#Bar plot for Location
+Location_plot<-ggplot(location_srz, aes(x = Location, y = Freq, fill = Location)) +  # Plot with values on top
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = Freq), vjust = 0)
+
+#Bar plot for Transpiration_type
+Transpiration_plot<-ggplot(transpiration_srz, aes(x = Transpiration_type, y = Freq, fill = Transpiration_type)) +  # Plot with values on top
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = Freq), vjust = 0)
+
+moisture_data<-data.my$Moisture_Content
+
+#Univariate numerical
+quantile(moisture_data)
+summary(moisture_data)
+sd(moisture_data)
+IQR(moisture_data)
+mad(moisture_data)
+
+#Bivariate analysis
+
+df<-data.frame(data.my)
+cor(df)
 knitr::opts_chunk$set(echo = TRUE)
 treemoist <- read.delim("treemoist.txt", header=FALSE, sep="")
 colnames(treemoist) <- c("species", "branch", "location", "transpiration", "moisture")
@@ -26,6 +80,7 @@ tm_no_inter.aov <- aov(moisture ~ species + branch + location + transpiration + 
 # f test to compare submodels --> I did not chose this method
 
 # StepAIC function from Mass pkg to help explore the model space
+
 library(AICcmodavg)
 library(MASS)
 stepAIC(tm_inter.aov, direction = "both")
@@ -62,6 +117,56 @@ The dataset consists of the following columns:
 
 
 ## Exploratory Data Analysis
+
+### Univariate Analysis
+
+We can see that in the dataset Species, Branch, Location and Transportation types are categorical values, while Moisture Content is a numerical value. We will discuss first the categorical attributes and then numerical attribute (Moisture Content).
+
+* *Categorical values*:
+
+All of the variables Species, Branch, Location and Transportation are
+uniformly distributed. The difference between those attributes is how many values can each
+attribute can have.
+
+* *Numerical values*:
+
+```{r, echo=FALSE}
+par(mfrow=c(2,2))
+#Histogram of moisture_content
+hist(moisture_data,xlab = "Moisture_Content")
+
+#Boxplot of moisture_content
+boxplot(moisture_data,names='Moisture_Content')
+
+#Q-Q plot of moisture_content
+qqnorm(moisture_data)
+qqline(moisture_data)
+
+#Dotplot of moisture_content
+dotchart(moisture_data,cex=.7,
+         main="Moisture Content of Samples from Tree Branches",
+         xlab="Moisture")
+```
+Moisture Content has a more complex distribution. Here are the main analytical metrics:
+
+* *Min*: 689
+* *1st Quartile*: 1026
+* *Median*: 1148 
+* *Mean*: 1137
+* *3rd Quartile*: 1247
+* *Max*: 1983
+
+
+We can see from the normal q-q plot and the histogram that this distribution is right-skewed.
+If we look deeper into the spread of the Moisture Content, the feature has a Standard deviation of 185, an Interquartile range of 221 and a Median Absolute Deviation of 152. This also conveys how dense is this attribute close to both its median and mean.
+
+### Bivariate Analysis
+
+```{r, echo=FALSE}
+ggpairs(data.my, aes( alpha = 0.4))
+```
+The pair-wise plot presents both a numerical and graphical analysis. It contains in the upper-right triangle the pairwise correlation coefficients and in the lower-left triangle the pairwise distributions.
+We notice a significant correlation of -0.248 between the location of cutting on the branch and the moisture content and a significant correlation of -0.310 between the transpiration type and the moisture content and no significant correlation between other variables.
 
 ## Model Fitting
 
