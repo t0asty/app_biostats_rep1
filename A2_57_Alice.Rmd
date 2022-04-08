@@ -1,0 +1,150 @@
+---
+title: "Report1"
+author: "Seif Ben Mustapha, Mohamed Dhraief, Alice Patin, Julian Schnitzler"
+fontsize: 12pt
+output:
+  pdf_document:
+    includes:
+      in_header: preamble.tex
+  word_document: default
+geometry: margin=2.5cm
+---
+
+```{r setup, include=FALSE}
+#knitr::opts_chunk$set(echo = TRUE)
+treemoist <- read.delim("treemoist.txt", header=FALSE, sep="")
+colnames(treemoist) <- c("species", "branch", "location", "transpiration", "moisture")
+treemoist_no_outliers <- treemoist[-c(22,109),]
+
+# Anova without interaction terms
+tm.aov <- aov(moisture ~ species + branch + location + transpiration, data=treemoist)
+tm_no.aov <- aov(moisture ~ species + branch + location + transpiration, data=treemoist_no_outliers)
+
+# Anova with interaction terms
+tm_inter.aov <- aov(moisture ~ species + branch + location + transpiration + species:branch + species:location + species:transpiration + branch:location + branch:transpiration + location:transpiration + species:branch:location:transpiration, data=treemoist)
+tm_no_inter.aov <- aov(moisture ~ species + branch + location + transpiration + species:branch + species:location + species:transpiration + branch:location + branch:transpiration + location:transpiration +  species:branch:location:transpiration, data=treemoist)
+
+# f test to compare submodels --> I did not chose this method
+
+# StepAIC function from Mass pkg to help explore the model space
+library(AICcmodavg)
+library(MASS)
+stepAIC(tm_no_inter.aov, direction = "both")
+tm_paper.aov <- aov(moisture ~ transpiration + species + transpiration:species + branch + location + location:transpiration + location:species + location:species:transpiration)
+AIC(tm_paper.aov)
+
+
+# Questions that still need to be answered: 
+# - "Do we have enough data to estimate the interactions?" 
+# - Should we add interaction terms 3-by-3 ?
+
+# To do: 
+# - display both of the formula with and without interaction
+# - Conclusion: to be done after the writing of the other paragraphs
+
+```
+
+## Introduction
+This report takes over on the scientific question of the paper of McDermott, J.J. published in 1941. The paper was studying the effect of different parameters on tree moisture content. The authors looked at how tree species as well as the type of the transpiration rate, the branch segment chosen and its cutting method could predict moisture. Because of the tension of water inside the branch the method of cutting of the branch segments is expected to influence the measured moisture content. In the below work, we optimized the model of prediction of moisture based on ANOVA and on the Akaike Information Criterion.
+
+## Exploratory Data Analysis
+
+## Model Fitting
+
+In order to find the model that was fitting the most accurately with the moisture data, we first created a model considering each parameter separately: species, branch (sample number), location (location of the segment on the branch which corresponds to the cutting method) and transpiration (transpiration rate). 
+
+$$
+\begin{aligned}
+ formula = moisture \sim species + branch + location + transpiration
+\end{aligned}
+$$
+
+Then, we constructed another model taking into account the interaction of the parameters two-by-two and the interaction of all the parameters together:
+
+$$
+\begin{aligned}
+ formula = moisture \sim species + branch + location + transpiration + species:branch + species:location + species:transpiration + branch:location + branch:transpiration + location:transpiration +  species:branch:location:transpiration
+\end{aligned}
+$$
+
+
+Finally, we compare the two models.
+
+In order to choose the "best-fit" model, meaning the model explaining the most the variance in the data, we used the “stepAIC” function. This function allows to simplify the model by decreasing the number of features without loosing too many pieces of information. For each version of the model, the Akaike Information Criterion (AIC) is computed. The AIC represents the amount of information loss by the model. It is the inverse of the information explained by the model. The aim is to choose the model with the lowest AIC value, meaning that the model explains more information. The absolute value of AIC has no significance but we compare its value between two models.
+
+
+Looking at the different steps of the stepAIC function, we see that that the first model containing all the interactions has an AIC of 1247.37. At the last step, the model with the lowest AIC of 1236.98 was the one containing only an interaction term between species and transpiration. The “best-fit” model is
+
+$$
+\begin{aligned}
+ formula = moisture \sim species + location + transpiration + species:transpiration
+\end{aligned}
+$$
+
+If we take a step back, this means that species and transpiration are not only influencing moisture individually but the interaction between them has to be considered in order to predict the most precisely possible the moisture content.
+
+
+## Model Assessment
+
+In the following, we assess whether the assumptions underlying our model hold, i.e.
+that the errors have mean 0, the errors are homoscedastic, the errors are uncorrelated and
+are normally distributed. 
+
+At first, we can confirm from the paper that the samples were randomly chosen as each triplet of three samples (corresponding to the three segments of a branch) were taken from different trees.
+
+```{r, echo=FALSE}
+layout(matrix(1:6,ncol=3))
+plot(tm.aov, which = c(1,2,3,4,5,6))
+```
+
+Then, we observe from the above ANOVA plots that there are two outliers that might harm our model assumptions: Rows 22 and 109. Since
+these two points are the only two points that appear as outliers in all 4 graphs, 
+we will remove those two from our dataset. For all other observations, it seems 
+that they follow the model assumptions approximately.
+
+In the Residuals vs Fitted graph, we can observe that the errors are homoscedastic,
+i.e. have the same variance, since the datapoints distribute in an similar manner
+above and underneath the line, independent of the fitted value. 
+We can see an exception for 109 and 22. 
+
+The design of the experiment as written in the original paper indicates that 
+the samples were chosen randomly, so we can consider all features to be 
+uncorrelated.
+
+From the Normal Q-Q plot, we can see that the residuals follow the line 
+closely, i.e. the standard residuals do not exceed 3, except for rows 109 and 22.
+Hence, except for those two points, we consider the assumption of normally distributed errors to hold. 
+
+```{r, echo=FALSE}
+layout(matrix(1:6,ncol=3))
+plot(tm_no.aov, which = c(1,2,3,4,5,6))
+```
+
+Indeed, removing those outliers seem to make the whole dataset support 
+the model assumptions.
+
+## Conclusions
+
+
+Two observations of the dataset seem to be outliers.
+
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
