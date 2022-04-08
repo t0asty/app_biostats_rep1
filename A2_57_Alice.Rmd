@@ -3,10 +3,10 @@ title: "Report1"
 author: "Seif Ben Mustapha, Mohamed Dhraief, Alice Patin, Julian Schnitzler"
 fontsize: 12pt
 output:
+  word_document: default
   pdf_document:
     includes:
       in_header: preamble.tex
-  word_document: default
 geometry: margin=2.5cm
 ---
 
@@ -30,7 +30,9 @@ tm_no_inter.aov <- aov(moisture ~ species + branch + location + transpiration + 
 library(AICcmodavg)
 library(MASS)
 stepAIC(tm_no_inter.aov, direction = "both")
-tm_paper.aov <- aov(moisture ~ transpiration + species + transpiration:species + branch + location + location:transpiration + location:species + location:species:transpiration)
+
+# Computation of the AIC for the model of the paper
+tm_paper.aov <- aov(moisture ~ transpiration + species + transpiration:species + branch + location + location:transpiration + location:species + location:species:transpiration, data=treemoist)
 AIC(tm_paper.aov)
 
 
@@ -81,8 +83,6 @@ $$
 \end{aligned}
 $$
 
-If we take a step back, this means that species and transpiration are not only influencing moisture individually but the interaction between them has to be considered in order to predict the most precisely possible the moisture content.
-
 
 ## Model Assessment
 
@@ -125,10 +125,16 @@ the model assumptions.
 
 ## Conclusions
 
+As a conclusion, we see that two observations of the dataset seem to be outliers. 
+In comparison to the model of the paper, we see that our model fits better the moisture content of trees than the one from the authors, as the AIC of the model of the paper is 1583.49 and ours is 1236.98. 
+If we take a step back, our model confirmed that as expected by the authors, the segment location on the branch is influencing the measured moisture content, probably due to the difference in water tension inside the segment. Our model also showed that species and transpiration are not only influencing moisture individually but the interaction between them has to be considered in order to predict the most precisely possible the moisture content.
 
-Two observations of the dataset seem to be outliers.
 
-
+$$
+\begin{aligned}
+ formula = moisture \sim transpiration + species + transpiration:species + branch + location + location:transpiration + location:species + location:species:transpiration
+\end{aligned}
+$$
 ## R Markdown
 
 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
