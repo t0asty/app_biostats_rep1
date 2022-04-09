@@ -120,15 +120,30 @@ The dataset consists of the following columns:
 
 ### Univariate Analysis
 
-We can see that in the dataset Species, Branch, Location and Transportation types are categorical values, while Moisture Content is a numerical value. We will discuss first the categorical attributes and then numerical attribute (Moisture Content).
+We can see that in the dataset Species, Branch, Location and Transportation types are categorical values, while Moisture Content is a numerical value. We will first discuss the categorical attributes and then the numerical attribute (Moisture Content).
 
 * *Categorical values*:
 
 All of the variables Species, Branch, Location and Transportation are
-uniformly distributed. The difference between those attributes is how many values can each
-attribute can have.
+uniformly distributed. The difference between those attributes is how many values each attribute can take.
 
-* *Numerical values*:
+We can count the following numbers of occurrences
+
+Column         Value  Count   Column         Value  Count
+------         -----  -----   ------         -----  -----
+Species         1      30       Location        1     40
+                2      30                       2     40
+                3      30                       3     40
+                4      30       Transpiration   1     60
+Branch          1      24                       2     60
+                2      24
+                3      24
+                4      24
+                5      24
+------         -----  -----    ------         -----  -----
+
+* *Numerical values*:  
+&nbsp;
 
 ```{r, echo=FALSE}
 par(mfrow=c(2,2))
@@ -147,6 +162,14 @@ dotchart(moisture_data,cex=.7,
          main="Moisture Content of Samples from Tree Branches",
          xlab="Moisture")
 ```
+
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
 Moisture Content has a more complex distribution. Here are the main analytical metrics:
 
 * *Min*: 689
@@ -156,9 +179,11 @@ Moisture Content has a more complex distribution. Here are the main analytical m
 * *3rd Quartile*: 1247
 * *Max*: 1983
 
+* *Standard Dev.*: 185
+
 
 We can see from the normal q-q plot and the histogram that this distribution is right-skewed.
-If we look deeper into the spread of the Moisture Content, the feature has a Standard deviation of 185, an Interquartile range of 221 and a Median Absolute Deviation of 152. This also conveys how dense is this attribute close to both its median and mean.
+If we look deeper into the spread of the Moisture Content, the feature has a Standard deviation of 185, an Interquartile range of 221 and a Median Absolute Deviation of 152. This also conveys how dense this attribute is close to both its median and mean.
 
 ### Bivariate Analysis
 
@@ -201,6 +226,7 @@ $$
  moisture \sim species + location + transpiration + species:transpiration
 \end{aligned}
 $$
+&nbsp;
 
 After removing outliers as described in the Model Assessment section, we receive a AIC of 1179.8 in the last step of stepAIC, giving us the best model as 
 
