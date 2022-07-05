@@ -1,0 +1,36 @@
+---
+output:
+  pdf_document:
+    includes:
+      in_header: "preamble.tex"
+fontsize: 12pt
+geometry: margin=2.5cm
+author: Seif Ben Mustapha, Mohamed Dhraief, Alice Patin, Julian Schnitzler
+---
+
+(1) 1. Briefly give the biomedical background for the paper. What question/hypothesis is being investigated?
+
+Papillary thyroid cancer (PTC) is a type of thyroid cancer, that accounts for about 80 % of all cases of thyroid cancer. The paper assesses risk factors for the development of central lymph node metastasis in patients that were diagnosed with this type of cancer. 
+
+(1) 2. What data are collected (include how many individuals, what variables)?
+
+In total there are 180 patients that were taken in the study. The authors took the Age and Gender of the patients, the size of the tumor and whether these tumors are multifocal, furthermore whether there was Hashimoto‘s thyroiditis, lymphovascualr invasion observed in the patients, or whether extrathyroidal extentions were found in the patients.
+
+(1) 3. What analyses were carried out? Are these analyses appropriate for the problem?
+
+The authors use both a Univariate and Multivariate logistic regression analysis to find the factors that predict the occurance of lymph node metastasis in patients. They fit a univariate and multivariate logistic regression model to the dataset and report p-values and confidence intervals of the respective parameters for each predictor. They seem appropriate, since the outcome of the test is on a discrete 0-1 scale (0: no lymph node metastasis found, 1: lymph node metastasis found). 
+
+(1) 4. What other analyses should have been done (or might have been done but not shown)? Explain.
+
+The authors should have used a stepwise selection approach to choose the best model. Since they only fitted the most sophisticated model including all available parameters, it might be the case that the model is actually overfitting the dataset, and not be the best model to explain the data. Then, effects of parameters might be wrongly stated.
+
+Moreover, the authors could have checked for multicollinearity. It might be the case that the three predictors that seem to be signficantlly non-zero are correlated and therefore each have an impact on the outcome. 
+
+(1) 5. Is there any mention of power of the analyses? How would you go about trying to estimate power? 
+
+There is no real mention of power, however, the sample size is given. Based on this information, it might be possible to assume the power of the analysis. Since the sample size is rather small, we assume the conducted analyses to not be very powerful. 
+
+(1) 6. What conclusions do the authors draw? Are these conclusions substantiated by the results? Explain.
+
+The authors conclude that multifocality, HT and LVI
+are independent predictors of central lymph node metastasis in Papillary thyroid cancer patients, and that surgeons should consider these as risk factors. While the analysis shows this effect, the experiment design does not allow such a general conclusion, since the patients came from one hospital only and the sample size was very small.
